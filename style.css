@@ -1,0 +1,220 @@
+:root {
+    --gap: 3px;
+    --cell: min(111px, calc((100dvh - 2.5rem) / 7.05), calc((100vw - 28rem) / 5.05));
+    --bg: #11140f;
+    --panel: #1a1f17;
+    --ligne: #2e3729;
+    --texte: #eef0e6;
+    --doux: #a2ab94;
+    --bleu: #4aa3ec;
+    --rouge: #ee5f73;
+    --or: #f0b94d;
+}
+
+body[data-tour="bleu"]  { --t: var(--bleu); }
+body[data-tour="rouge"] { --t: var(--rouge); }
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--bg);
+    color: var(--texte);
+    font-family: Figtree, system-ui, "Segoe UI", sans-serif;
+}
+
+.jeu {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 1.25rem;
+}
+
+.mentions {
+    max-width: 52rem;
+    padding: 1.25rem 1.25rem 1.5rem;
+    text-align: center;
+    font-size: .8rem;
+    line-height: 1.6;
+    color: var(--doux);
+}
+.mentions p { margin: 0 0 .4rem; }
+
+/* Plateau : 5 colonnes, 7 lignes (banc rouge, 5×5, banc bleu) */
+#plateau {
+    width: calc(var(--cell) * 5 + var(--gap) * 4);
+    border-radius: 16px;
+    overflow: hidden;
+    background: #486b2c url('assets/plateau.png') center / calc(var(--cell) * 5.4054) no-repeat;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .55);
+}
+
+#cases-container {
+    display: grid;
+    grid-template-columns: repeat(5, var(--cell));
+    grid-auto-rows: var(--cell);
+    gap: var(--gap);
+}
+
+.case { position: relative; }
+
+.piece {
+    width: 100%;
+    height: 100%;
+    background: center / cover no-repeat;
+    transition: transform .22s ease;
+    pointer-events: none;
+}
+
+.jouable, .cible, .poussee { cursor: pointer; }
+
+.selectionnee .piece {
+    filter: drop-shadow(0 0 2px var(--or)) drop-shadow(0 0 9px var(--or));
+}
+
+.cible::after {
+    content: '';
+    position: absolute;
+    inset: 37%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .88);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .25);
+    transition: transform .15s ease;
+}
+.cible:hover::after { transform: scale(1.3); }
+
+.poussee::after {
+    content: '';
+    position: absolute;
+    inset: 4%;
+    border: 4px solid var(--or);
+    border-radius: 18%;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, .3);
+}
+
+.bloquee::before {
+    content: '';
+    position: absolute;
+    inset: 14%;
+    background: url('assets/croix.png') center / contain no-repeat;
+}
+
+/* Panneau de commandes */
+#rotation-container {
+    display: grid;
+    gap: 1rem;
+    width: 20rem;
+    padding: 1.5rem;
+    background: var(--panel);
+    border: 1px solid var(--ligne);
+    border-radius: 18px;
+}
+
+h1 { margin: 0; font-size: 1.6rem; font-weight: 700; }
+
+#tour-texte {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+#tour-texte::before {
+    content: '';
+    width: .85rem;
+    height: .85rem;
+    border-radius: 50%;
+    background: var(--t);
+    box-shadow: 0 0 12px var(--t);
+}
+
+#message {
+    margin: 0;
+    min-height: 3em;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: var(--doux);
+}
+
+.legende { margin: .5rem 0 -.25rem; font-size: .9rem; color: var(--doux); }
+
+.orientation {
+    display: grid;
+    grid-template-columns: repeat(3, 3.25rem);
+    grid-template-rows: repeat(3, 3.25rem);
+    grid-template-areas: ". haut ." "gauche . droite" ". bas .";
+    gap: .4rem;
+    justify-content: center;
+}
+.orientation button {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: #262d21;
+    border: 1px solid var(--ligne);
+    border-radius: 12px;
+    color: var(--texte);
+    cursor: pointer;
+}
+.orientation svg {
+    width: 1.5rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transform: rotate(var(--r));
+}
+
+.actions { display: grid; gap: .6rem; margin-top: .5rem; }
+
+button {
+    padding: .75rem 1rem;
+    font: inherit;
+    font-weight: 700;
+    color: var(--texte);
+    background: transparent;
+    border: 1px solid var(--ligne);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: filter .15s ease;
+}
+button:hover { filter: brightness(1.25); }
+button:focus-visible { outline: 3px solid var(--or); outline-offset: 2px; }
+button.principal { color: #2a1f05; background: var(--or); border-color: var(--or); }
+button.discret { color: var(--doux); border-color: transparent; }
+
+/* Écran de fin */
+#fin {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, .65);
+}
+#fin[hidden] { display: none; }
+.carte {
+    display: grid;
+    gap: 1.25rem;
+    padding: 2rem 2.5rem;
+    text-align: center;
+    background: var(--panel);
+    border: 1px solid var(--ligne);
+    border-radius: 18px;
+}
+#fin-texte { margin: 0; font-size: 1.6rem; font-weight: 700; }
+
+@media (max-width: 860px) {
+    :root { --cell: min(111px, calc((100vw - 2rem) / 5.05)); }
+    .jeu { flex-direction: column; gap: 1.25rem; padding: 1rem; }
+    #rotation-container { width: min(100%, 24rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .piece, .cible::after, button { transition: none; }
+}

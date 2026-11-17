@@ -94,4 +94,3 @@ Projet universitaire à but pédagogique, sans aucun usage commercial, réalisé
 - **Illustrations :** Siam. Elles restent la propriété de leurs détenteurs et ne sont pas couvertes par la licence du code.
 - **Code :** © Enrik Pashaj, tous droits réservés.
 
-Pour toute demande de retrait, contacter [adresse e-mail].
